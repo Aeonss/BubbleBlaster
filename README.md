@@ -1,5 +1,3 @@
-<p align="center"><img src="https://i.imgur.com/QwItpe6.png" width="200" height="200"/></p>
-
 <h1 align="center">BubbleBlaster</h1>
 
 <font size="3"><a href="https://github.com/Aeonss/BubbleBlaster/releases/latest/">Bubble Blaster</a> is a python script that remove text from speech bubbles in mangas/manhwas with OCR.
