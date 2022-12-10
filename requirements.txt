@@ -1,0 +1,4 @@
+deep_translator==1.9.1
+easyocr==1.6.2
+matplotlib==3.6.2
+opencv_python_headless==4.5.4.60
