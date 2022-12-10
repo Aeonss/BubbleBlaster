@@ -31,6 +31,19 @@ pip install -r requirements.txt
 
 
 ## 🚀 &nbsp; Usage
+Arguments:
+``` bash
+-i  <image>         ->  Path to image [Required]
+-l  (language code) ->  (Default: English) -> Reference from: https://www.jaided.ai/easyocr/ [Optional]
+-c (confidence)    ->  (Default: 0.15)    -> Any text below this number will not be removed [Optional]
+```
+
+Flags:
+``` bash
+--t     -> Any foreign text will be replaced with English text (Default: false)
+--d     -> Show rectangle text and console message (Default: false)
+```
+
 Example usage:
 ``` bash
 python bubbleblaster.py -i PATH/IMAGE.png
@@ -59,20 +72,6 @@ python bubbleblaster.py -l ja -i image.png
 Remove Japanese text with confidence levels above 0.5:
 ``` bash
 python bubbleblaster.py -l ja -i image.png -c 0.5
-```
-
-
-Arguments:
-``` bash
--i  <image>         ->  Path to image [Required]
--l  (language code) ->  (Default: English) -> Reference from: https://www.jaided.ai/easyocr/ [Optional]
---c (confidence)    ->  (Default: 0.15)    -> Any text below this number will not be removed [Optional]
-```
-
-Flags:
-``` bash
---t     -> Any foreign text will be replaced with English text (Default: false)
---d     -> Show rectangle text and console message (Default: false)
 ```
 
 
