@@ -41,7 +41,7 @@ Arguments:
 Flags:
 ``` bash
 --t     -> Any foreign text will be replaced with English text (Default: false)
---d     -> Show rectangle text and console message (Default: false)
+--d     -> Show rectangle text and console messages (Default: false)
 ```
 
 Example usage:

@@ -86,7 +86,7 @@ def OCR():
             # Add text translation and location to a list
             if TRANSLATE:
                 if not r[1].isnumeric():
-                    translation = GoogleTranslator(source=LANG, target='en').translate(r[1])
+                    translation = GoogleTranslator(source='auto', target='en').translate(r[1])
                     trans_list.append((translation, top_left))
                     
                     if DEBUG:
@@ -113,9 +113,11 @@ def OCR():
         plt.figure(figsize=(7, 7))
         plt.axis('off')
         
+        #    cv2.imwrite("mask.png", mask)
         
         plt.imshow(cv2.cvtColor(img_inpaint, cv2.COLOR_BGR2RGB))
         plt.show()
+        
     
     
     cv2.imwrite(IMAGE.replace(".png", "").replace(".jpg", "") + "_ocr.png", img_inpaint)
