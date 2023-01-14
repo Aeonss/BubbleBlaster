@@ -42,6 +42,7 @@ Flags:
 ``` bash
 --t     -> Any foreign text will be replaced with English text (Default: false)
 --d     -> Show rectangle text and console messages (Default: false)
+--png   -> Auto convert the jpg image to png in case of this [issue](https://github.com/Aeonss/BubbleBlaster/issues/1)
 ```
 
 Example usage:

@@ -12,6 +12,7 @@ import easyocr
 from deep_translator import GoogleTranslator
 import cv2
 from matplotlib import pyplot as plt
+from PIL import Image
 
 #----------------------------------------------------------------------------------------------------#
 
@@ -24,6 +25,7 @@ def OCR():
     parser.add_argument("-c", "-conf", help="Confidence value", nargs='?', const=0.15, default=0.15, type=float) # Default = 0.15
     parser.add_argument("--t", "--translate", action='store_true', help="Replace foreign text with english text") # Default = False
     parser.add_argument("--d", "--debug", action='store_true', help="Show rectangles around text") # Default = False
+    parser.add_argument("--png", action='store_true', help="Auto convert jpgs to png") # Default = False
         
     args = parser.parse_args()
        
@@ -32,11 +34,19 @@ def OCR():
     TRANSLATE = args.t
     CONFIDENCE = args.c
     DEBUG = args.d
+    AUTO_PNG = args.png
     
     if not os.path.exists(IMAGE) or (not os.path.splitext(IMAGE)[-1].lower() == ".png" and not os.path.splitext(IMAGE)[-1].lower() == ".jpg"):
         print("ERROR: File does not exist or File is not a PNG or JPG!")
         return
 
+    
+    if AUTO_PNG:
+        print(IMAGE)
+        PNG_IMAGE = Image.open(IMAGE)
+        NEW_NAME = IMAGE.split(".")[0] + "_png.png"
+        PNG_IMAGE.save(NEW_NAME)
+        IMAGE = NEW_NAME
     
     
     # OCR
@@ -45,6 +55,7 @@ def OCR():
 
 
     # Images
+    print(IMAGE)
     img_rect = cv2.imread(IMAGE)
     img_temp = cv2.imread(IMAGE)
     h, w, c = img_temp.shape
