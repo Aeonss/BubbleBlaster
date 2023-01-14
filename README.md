@@ -84,7 +84,9 @@ python bubbleblaster.py -l ja -i image.png -c 0.5
 
 
 ## 🤖 &nbsp; To Do
+* Add support for whole folder OCR (Priority)
 * Make integrated translations better
+
 
 
 ## 📘 &nbsp; License
