@@ -64,12 +64,10 @@ python bubbleblaster.py
 
 ## ✅ &nbsp; Additional Information
 * BubbleBlaster was created with [**EasyOCR**](https://github.com/JaidedAI/EasyOCR) and [**Deep-Translator**](https://github.com/nidhaloff/deep-translator).
-* Note that due to the way the text is exported, the translation is not entirely accurate.
 * Please request any features or report any bugs in [issues](https://github.com/Aeonss/BubbleBlaster/issues).
 
 
 ## 🤖 &nbsp; To Do
-* Make translations better
 * Somehow package everything into an exe...
 
 

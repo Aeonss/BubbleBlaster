@@ -1,9 +1,9 @@
 #----------------------------------------------------------------------------------------------------#
 
 #   References:
-#   https://github.com/JaidedAI/EasyOCR
 #   https://www.analyticsvidhya.com/blog/2021/06/text-detection-from-images-using-easyocr-hands-on-guide/
-#   https://stackoverflow.com/questions/39316447/opencv-giving-wrong-color-to-colored-images-on-loading
+#   https://stackoverflow.com/a/39316695
+#   https://stackoverflow.com/a/40795835
 
 #----------------------------------------------------------------------------------------------------#
 
@@ -24,7 +24,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry('500x500')
-        self.title("BubbleBlaster v1.0")
+        self.title("BubbleBlaster")
         self.eval('tk::PlaceWindow . center')
 
 
@@ -80,7 +80,6 @@ class App(ctk.CTk):
         
         #self.pngSwitch = ctk.CTkSwitch(master=self.optionsFrame, text="Export as png", onvalue=1, offvalue=0)
         #self.pngSwitch.grid(row=1, column=1, pady=(20, 0), padx=10)
-        
         
 
         self.processButton = ctk.CTkButton(master=self, width=120, height=32, corner_radius=8, text="Blast!", command=self.blast)
@@ -146,8 +145,9 @@ class App(ctk.CTk):
             img_inpaint = cv2.imread(image)
             
             preview_rect = cv2.imread(image)
-            raw_list = []
             
+            raw_list = []
+            rects = []
             
             # For each detected text
             for r in result:
@@ -158,15 +158,22 @@ class App(ctk.CTk):
                     # Add text to raw list
                     raw_list.append(r[1])
                     
-                    # Save the tuple of top left and bottom right of where the text is
-                    top_left = tuple(int(x) for x in tuple(r[0][0]))
-                    bottom_right = tuple(int(x) for x in tuple(r[0][2]))
+                    # Save the tuple of top right and bottom left of where the text is
+                    # Bottom Left = r[0][0]
+                    # Bottom Right = r[0][1]
+                    # Top Right = r[0][2]
+                    # Top Left = r[0][3]
+                    bottom_left = tuple(int(x) for x in tuple(r[0][0]))
+                    top_right = tuple(int(x) for x in tuple(r[0][2]))
+                    
+                    # Add rectangles to a list
+                    rects.append((top_right, bottom_left))
                     
                     # Draw a rectangle around the text
-                    img_rect = cv2.rectangle(img_rect, top_left, bottom_right, (0,255,0), 3)        
+                    img_rect = cv2.rectangle(img_rect, bottom_left, top_right, (0,255,0), 3)        
                     
                     # Fill text with white rectangle
-                    img_temp = cv2.rectangle(img_temp, top_left, bottom_right, (255, 255, 255), -1)
+                    img_temp = cv2.rectangle(img_temp, bottom_left, top_right, (255, 255, 255), -1)
                     
                     # Convert temp image to black and white for mask
                     mask = cv2.cvtColor(img_temp, cv2.COLOR_BGR2GRAY)
@@ -174,14 +181,11 @@ class App(ctk.CTk):
                     # "Content-Fill" using mask (INPAINT_NS vs INPAINT_TELEA)
                     img_inpaint = cv2.inpaint(img_inpaint, mask, 3, cv2.INPAINT_TELEA)
             
-
-                    
-                    
                     # Draw a rectangle around the text
-                    preview_rect = cv2.rectangle(img_rect, top_left, bottom_right, (0,255,0), 3)
+                    preview_rect = cv2.rectangle(img_rect, bottom_left, top_right, (0,255,0), 3)
                     
                     # Draw confidence level on detected text
-                    cv2.putText(preview_rect, str(round(r[2], 2)), top_left, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, 1)
+                    cv2.putText(preview_rect, str(round(r[2], 2)), bottom_left, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, 1)
             
             
             # Show all detected text and their confidence level
@@ -193,25 +197,17 @@ class App(ctk.CTk):
                     
             # Export raw list to a text file
             if EXPORT_RAW:
-                path = os.path.dirname(image)
-                with open(os.path.join(path, os.path.splitext(os.path.basename(image))[0] + "_raw.txt"), 'w', encoding='UTF-8') as fp:
-                    for line in raw_list:
-                        fp.write(f"{line}\n")
-                    fp.close()
+                self.exportRaw(image, raw_list, rects)
             
-            
+            # Export translated raw text to a text file
             if EXPORT_TRANSLATE:
+                raw = self.exportRaw(image, raw_list, rects)
                 
-                trans_list = []
-                for raw in raw_list:
-                    if not raw.isnumeric():
-                        translation = GoogleTranslator(source='auto', target='en').translate(raw)
-                        trans_list.append(translation)
+                translation = GoogleTranslator(source='auto', target='en').translate(raw)
                         
                 path = os.path.dirname(image)
                 with open(os.path.join(path, os.path.splitext(os.path.basename(image))[0] + "_translated.txt"), 'w', encoding='UTF-8') as fp:
-                    for line in trans_list:
-                        fp.write(f"{line}\n")
+                    fp.write(translation)
                     fp.close()
             
             # Export image
@@ -219,7 +215,36 @@ class App(ctk.CTk):
         
         messagebox.showinfo(title=None, message="Bubbles have been blasted!")
         self.inputTextbox.delete("0.0", "end")
+    
+    
+    
+    
+    # Checks if two rectangles are intersecting using Separating Axis Theorem
+    # (top right(x,y)), bottom left(x,y))
+    def intersect(self, top_right1, bottom_left1, top_right2, bottom_left2):    
+        return not (top_right1[0] < bottom_left2[0] or bottom_left1[0] > top_right2[0] or top_right1[1] < bottom_left2[1] or bottom_left1[1] > top_right2[1])
 
+
+
+    # Exports raw text in the image into a text file
+    def exportRaw(self, image, raw_list, rects):
+        path = os.path.dirname(image)
+        raw_string = ""
+        with open(os.path.join(path, os.path.splitext(os.path.basename(image))[0] + "_raw.txt"), 'w', encoding='UTF-8') as fp:
+            for index, obj in enumerate(raw_list):
+                if index > 0:
+                    if self.intersect(rects[index][0], rects[index][1], rects[index-1][0], rects[index-1][1]):
+                        fp.write(f"{obj}")
+                        raw_string += obj
+                    else:
+                        fp.write(f"\n{obj}")
+                        raw_string += "\n" + obj
+                else:
+                    fp.write(f"{obj}")
+                    raw_string += obj
+            fp.close()
+        return raw_string
+    
 if __name__ == "__main__":
     app = App()
     app.mainloop()
