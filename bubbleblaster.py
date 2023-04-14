@@ -10,7 +10,7 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
-import sys, os
+import sys, os, requests, json
 import easyocr
 import cv2
 from deep_translator import GoogleTranslator
@@ -24,8 +24,12 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry('500x500')
-        self.title("BubbleBlaster")
+        self.tag = "1.0"
+        self.title(f"BubbleBlaster v{self.tag}")
         self.eval('tk::PlaceWindow . center')
+        
+        
+        self.checkUpdate()
 
 
         self.grid_rowconfigure(0, weight=0)
@@ -244,6 +248,18 @@ class App(ctk.CTk):
                     raw_string += obj
             fp.close()
         return raw_string
+    
+    
+    def checkUpdate(self):
+        r = requests.get("https://api.github.com/repos/Aeonss/BubbleBlaster/releases/latest")
+        latest_tag = json.loads(r.content).get("tag_name")
+        if latest_tag > self.tag:
+            res = messagebox.askquestion(title=None, message=f"A new update has been released for BubbleBlaster (v{latest_tag})! Do you want to download it?")
+            if res == 'yes':
+                r2 = requests.get(f"https://github.com/Aeonss/BubbleBlaster/releases/download/{latest_tag}/BubbleBlaster.zip", allow_redirects=True)
+                with open('BubbleBlaster.zip', 'wb') as f:
+                    f.write(r2.content)
+    
     
 if __name__ == "__main__":
     app = App()
