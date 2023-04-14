@@ -1,3 +1,12 @@
+#----------------------------------------------------------------------------------------------------#
+
+#   References:
+#   https://github.com/JaidedAI/EasyOCR
+#   https://www.analyticsvidhya.com/blog/2021/06/text-detection-from-images-using-easyocr-hands-on-guide/
+#   https://stackoverflow.com/questions/39316447/opencv-giving-wrong-color-to-colored-images-on-loading
+
+#----------------------------------------------------------------------------------------------------#
+
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
@@ -7,6 +16,8 @@ import cv2
 from deep_translator import GoogleTranslator
 from matplotlib import pyplot as plt
 from PIL import Image
+
+#----------------------------------------------------------------------------------------------------#
 
 class App(ctk.CTk):
 
