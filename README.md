@@ -39,9 +39,12 @@ Run the "BubbleBlaster.bat" file included in the release.
 ### Raw Text
 <img src="https://i.imgur.com/GNipEw1.png">
 
-### Translated Text vs Scanlation
+### Translated Text vs Scanlation Translation
 <img src="https://i.imgur.com/sFmAxh8.png">
 <img src="https://i.imgur.com/DpzX9NX.png">
+
+### Preview Image
+<img src="https://i.imgur.com/kcB9xUh.png">
 
 ### Files
 <img src="https://i.imgur.com/Ok8tzNV.png">

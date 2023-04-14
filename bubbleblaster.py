@@ -217,7 +217,7 @@ class App(ctk.CTk):
             # Export image
             cv2.imwrite(image.replace(".png", "").replace(".jpg", "") + "_ocr.png", img_inpaint)
         
-        messagebox.showinfo(title=None, message="Bubbles have been blasted!")
+        messagebox.showinfo(title="BubbleBlaster", message="Bubbles have been blasted!")
         self.inputTextbox.delete("0.0", "end")
     
     
@@ -254,7 +254,7 @@ class App(ctk.CTk):
         r = requests.get("https://api.github.com/repos/Aeonss/BubbleBlaster/releases/latest")
         latest_tag = json.loads(r.content).get("tag_name")
         if latest_tag > self.tag:
-            res = messagebox.askquestion(title=None, message=f"A new update has been released for BubbleBlaster (v{latest_tag})! Do you want to download it?")
+            res = messagebox.askquestion(title="BubbleBlaster", message=f"A new update has been released for BubbleBlaster (v{latest_tag})! Do you want to download it?")
             if res == 'yes':
                 r2 = requests.get(f"https://github.com/Aeonss/BubbleBlaster/releases/download/{latest_tag}/BubbleBlaster.zip", allow_redirects=True)
                 with open('BubbleBlaster.zip', 'wb') as f:
