@@ -24,7 +24,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry('500x500')
-        self.tag = "1.0"
+        self.tag = "1.1"
         self.title(f"BubbleBlaster v{self.tag}")
         self.eval('tk::PlaceWindow . center')
         
