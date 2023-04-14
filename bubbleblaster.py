@@ -1,140 +1,216 @@
-#----------------------------------------------------------------------------------------------------#
+import customtkinter as ctk
+from tkinter import filedialog, messagebox
 
-#   References:
-#   https://github.com/JaidedAI/EasyOCR
-#   https://www.analyticsvidhya.com/blog/2021/06/text-detection-from-images-using-easyocr-hands-on-guide/
-#   https://stackoverflow.com/questions/39316447/opencv-giving-wrong-color-to-colored-images-on-loading
-
-#----------------------------------------------------------------------------------------------------#
-
-import sys, os.path, argparse
+import sys, os
 import easyocr
-from deep_translator import GoogleTranslator
 import cv2
+from deep_translator import GoogleTranslator
 from matplotlib import pyplot as plt
 from PIL import Image
 
-#----------------------------------------------------------------------------------------------------#
+class App(ctk.CTk):
 
-def OCR():
-    
-    # Arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "-image", help="Image path", required=True)
-    parser.add_argument("-l", "-lang", help="Language code (https://www.jaided.ai/easyocr/)", nargs='?', const="en", default="en", required=False) # Default = en
-    parser.add_argument("-c", "-conf", help="Confidence value", nargs='?', const=0.15, default=0.15, type=float) # Default = 0.15
-    parser.add_argument("--t", "--translate", action='store_true', help="Replace foreign text with english text") # Default = False
-    parser.add_argument("--d", "--debug", action='store_true', help="Show rectangles around text") # Default = False
-    parser.add_argument("--png", action='store_true', help="Auto convert jpgs to png") # Default = False
+    def __init__(self):
+        super().__init__()
+        self.geometry('500x500')
+        self.title("BubbleBlaster v1.0")
+        self.eval('tk::PlaceWindow . center')
+
+
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_columnconfigure(0, weight=1)
         
-    args = parser.parse_args()
-       
-    IMAGE = args.i
-    LANG = args.l
-    TRANSLATE = args.t
-    CONFIDENCE = args.c
-    DEBUG = args.d
-    AUTO_PNG = args.png
-    
-    if not os.path.exists(IMAGE) or (not os.path.splitext(IMAGE)[-1].lower() == ".png" and not os.path.splitext(IMAGE)[-1].lower() == ".jpg"):
-        print("ERROR: File does not exist or File is not a PNG or JPG!")
-        return
-
-    
-    if AUTO_PNG:
-        print(IMAGE)
-        PNG_IMAGE = Image.open(IMAGE)
-        NEW_NAME = IMAGE.split(".")[0] + "_png.png"
-        PNG_IMAGE.save(NEW_NAME)
-        IMAGE = NEW_NAME
-    
-    
-    # OCR
-    reader = easyocr.Reader([LANG])
-    result = reader.readtext(IMAGE)
-
-
-    # Images
-    print(IMAGE)
-    img_rect = cv2.imread(IMAGE)
-    img_temp = cv2.imread(IMAGE)
-    h, w, c = img_temp.shape
-
-
-    # Fill temp image with black
-    img_temp = cv2.rectangle(img_temp, [0,0], [w, h], (0, 0, 0), -1)
-    img_inpaint = cv2.imread(IMAGE)
-    
-    trans_list = []
-
-    # For each detected text
-    for r in result:
         
-        # If the OCR text is above the CONFIDENCE
-        if r[2] >= CONFIDENCE:
+        self.inputFrame = ctk.CTkFrame(self, width=500, fg_color="transparent")
+        self.inputFrame.grid_rowconfigure(0, weight=0)
+        self.inputFrame.grid_columnconfigure(0, weight=0)
+        self.inputFrame.grid(row=0, column=0)
+
+        self.inputLabel = ctk.CTkLabel(master=self.inputFrame, width=20, height=20, text="Input Location", font=("Arial Bold", 14))
+        self.inputLabel.grid(row=0, column=0, sticky="nw", padx=25, pady=(20, 5))
+
+        self.inputTextbox = ctk.CTkTextbox(master=self.inputFrame, width=330, height=32, border_width=1, corner_radius=8, text_color="white")
+        self.inputTextbox.grid(row=1, column=0, padx=20)
+        self.inputTextbox.configure(state="disabled")
+        
+        self.inputButton = ctk.CTkButton(master=self.inputFrame, width=50, height=32, border_width=0, corner_radius=8, text="Import Image(s)", command=self.importImages)
+        self.inputButton.grid(row=1, column=1, padx=(0, 25))
+        
+        
+        
+        self.languageLabel = ctk.CTkLabel(master=self, width=20, height=20, text="Detected Language", font=("Arial Bold", 14))
+        self.languageLabel.grid(row=2, column=0, sticky="nw", padx=25, pady=(20, 5))
+        
+        self.languageCombobox = ctk.CTkComboBox(master=self, width=460, values=["Korean", "Japanese", "Simplified Chinese", "Traditional Chinese", "English"])
+        self.languageCombobox.grid(row=3, column=0, sticky="nw", padx=20)
+        
+        self.confidenceLabel = ctk.CTkLabel(master=self, width=20, height=20, text="Confidence: (0.4)", font=("Arial Bold", 14))
+        self.confidenceLabel.grid(row=4, column=0, padx=25, sticky="nw", pady=(20, 5))
+        
+        self.confidenceSlider = ctk.CTkSlider(master=self, from_=0, to=1, number_of_steps=100, width=460, command=self.updateConfidenceLabel)
+        self.confidenceSlider.grid(row=5, column=0, sticky="nw", padx=20)
+        self.confidenceSlider.set(0.4)
+    
+
+
+        self.optionsFrame = ctk.CTkFrame(self, width=500, fg_color="transparent")
+        self.optionsFrame.grid_rowconfigure(0, weight=0)
+        self.optionsFrame.grid_columnconfigure(0, weight=1)
+        self.optionsFrame.grid(row=6, column=0)
+        
+        self.rawSwitch = ctk.CTkSwitch(master=self.optionsFrame, text="Export raw text", onvalue=1, offvalue=0)
+        self.rawSwitch.grid(row=0, column=0, pady=(20, 0), padx=10)
+        
+        self.translateSwitch = ctk.CTkSwitch(master=self.optionsFrame, text="Export translated text", onvalue=1, offvalue=0)
+        self.translateSwitch.grid(row=0, column=1, pady=(20, 0), padx=10)
+        
+        self.previewSwitch = ctk.CTkSwitch(master=self.optionsFrame, text="Preview image before exporting", onvalue=1, offvalue=0)
+        self.previewSwitch.grid(row=1, column=0, pady=(20, 0), padx=10)
+        
+        #self.pngSwitch = ctk.CTkSwitch(master=self.optionsFrame, text="Export as png", onvalue=1, offvalue=0)
+        #self.pngSwitch.grid(row=1, column=1, pady=(20, 0), padx=10)
+        
+        
+
+        self.processButton = ctk.CTkButton(master=self, width=120, height=32, corner_radius=8, text="Blast!", command=self.blast)
+        self.processButton.grid(row=7, column=0, pady=(100, 0))
+    
+    
+    def importImages(self):
+        path = filedialog.askopenfilenames(parent=self, title="Choose input image(s)")
+        self.inputTextbox.configure(state="normal")
+        self.inputTextbox.delete("0.0", "end")
+        self.inputTextbox.insert("0.0", path)
+        self.inputTextbox.configure(state="disabled")
+        
+        
+    def updateConfidenceLabel(self, value):
+        self.confidenceLabel.configure(text=f"Confidence: ({round(value, 2)})")
+        
+    
+    def blast(self):
+        
+        # Check if any images are imported
+        imageInput = self.inputTextbox.get("0.0", "end").strip()
+        if imageInput == "":
+            messagebox.showerror("Error", "No images are inputed.")
+            return
+        
+        
+        # Get list of images to be OCR'd
+        images = list(self.tk.splitlist(imageInput))
+        
+        # Options
+        CONFIDENCE = self.confidenceSlider.get()
+        LANGUAGE = self.languageCombobox.get()
+        PREVIEW = self.previewSwitch.get()
+        EXPORT_RAW = self.rawSwitch.get()
+        EXPORT_TRANSLATE = self.translateSwitch.get()
+        
+        # Get language code
+        if LANGUAGE == "Korean":
+            LANGUAGE = "ko"
+        elif LANGUAGE == "Japanese":
+            LANGUAGE = "ja"
+        elif LANGUAGE == "Simplified Chinese":
+            LANGUAGE = "ch_sim"
+        elif LANGUAGE == "Traditional Chinese":
+            LANGUAGE = "ch_tra"
+        elif LANGUAGE == "English":
+            LANGUAGE = "en"
+
+    
+        for image in images:
+            # OCR
+            reader = easyocr.Reader([LANGUAGE])
+            result = reader.readtext(image)
+        
+            # Read the image
+            img_rect = cv2.imread(image)
+            img_temp = cv2.imread(image)
+            h, w, c = img_temp.shape
             
-            # Save the tuple of top left and bottom right of where the text is
-            top_left = tuple(int(x) for x in tuple(r[0][0]))
-            bottom_right = tuple(int(x) for x in tuple(r[0][2]))
+            # Fill temp image with black
+            img_temp = cv2.rectangle(img_temp, [0,0], [w, h], (0, 0, 0), -1)
+            img_inpaint = cv2.imread(image)
             
-            # Draw a rectangle around the text
-            img_rect = cv2.rectangle(img_rect, top_left, bottom_right, (0,255,0), 3)        
-            
-            # Fill text with white rectangle
-            img_temp = cv2.rectangle(img_temp, top_left, bottom_right, (255, 255, 255), -1)
-            
-            # Convert temp image to black and white for mask
-            mask = cv2.cvtColor(img_temp, cv2.COLOR_BGR2GRAY)
-            
-            # "Content-Fill" using mask (INPAINT_NS vs INPAINT_TELEA)
-            img_inpaint = cv2.inpaint(img_inpaint, mask, 3, cv2.INPAINT_TELEA)
+            preview_rect = cv2.imread(image)
+            raw_list = []
             
             
-            if DEBUG:
-                print(r)
-            
-            
-            # Add text translation and location to a list
-            if TRANSLATE:
-                if not r[1].isnumeric():
-                    translation = GoogleTranslator(source='auto', target='en').translate(r[1])
-                    trans_list.append((translation, top_left))
-                    
-                    if DEBUG:
-                        print(r[1] + "\t" + translation)
+            # For each detected text
+            for r in result:
                 
-                else:
-                    trans_list.append((r[1], top_left))
+                # If the OCR text is above the CONFIDENCE
+                if r[2] >= CONFIDENCE:
+                    
+                    # Add text to raw list
+                    raw_list.append(r[1])
+                    
+                    # Save the tuple of top left and bottom right of where the text is
+                    top_left = tuple(int(x) for x in tuple(r[0][0]))
+                    bottom_right = tuple(int(x) for x in tuple(r[0][2]))
+                    
+                    # Draw a rectangle around the text
+                    img_rect = cv2.rectangle(img_rect, top_left, bottom_right, (0,255,0), 3)        
+                    
+                    # Fill text with white rectangle
+                    img_temp = cv2.rectangle(img_temp, top_left, bottom_right, (255, 255, 255), -1)
+                    
+                    # Convert temp image to black and white for mask
+                    mask = cv2.cvtColor(img_temp, cv2.COLOR_BGR2GRAY)
+                    
+                    # "Content-Fill" using mask (INPAINT_NS vs INPAINT_TELEA)
+                    img_inpaint = cv2.inpaint(img_inpaint, mask, 3, cv2.INPAINT_TELEA)
+            
 
+                    
+                    
+                    # Draw a rectangle around the text
+                    preview_rect = cv2.rectangle(img_rect, top_left, bottom_right, (0,255,0), 3)
+                    
+                    # Draw confidence level on detected text
+                    cv2.putText(preview_rect, str(round(r[2], 2)), top_left, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, 1)
+            
+            
+            # Show all detected text and their confidence level
+            if PREVIEW:
+                plt.figure(figsize=(7, 7))
+                plt.axis('off')
+                plt.imshow(cv2.cvtColor(preview_rect, cv2.COLOR_BGR2RGB))
+                plt.show()
+                    
+            # Export raw list to a text file
+            if EXPORT_RAW == 1:
+                path = os.path.dirname(image)
+                with open(os.path.join(path, os.path.splitext(os.path.basename(image))[0] + "_raw.txt"), 'w', encoding='UTF-8') as fp:
+                    for line in raw_list:
+                        fp.write(f"{line}\n")
+                    fp.close()
+            
+            
+            if EXPORT_TRANSLATE == 1:
+                
+                trans_list = []
+                for raw in raw_list:
+                    if not raw.isnumeric():
+                        translation = GoogleTranslator(source='auto', target='en').translate(raw)
+                        trans_list.append(translation)
+                        
+                path = os.path.dirname(image)
+                with open(os.path.join(path, os.path.splitext(os.path.basename(image))[0] + "_translated.txt"), 'w', encoding='UTF-8') as fp:
+                    for line in trans_list:
+                        fp.write(f"{line}\n")
+                    fp.close()
+            
+            # Export image
+            cv2.imwrite(image.replace(".png", "").replace(".jpg", "") + "_ocr.png", img_inpaint)
+        
+        messagebox.showinfo(title=None, message="Bubbles have been blasted!")
+        self.inputTextbox.delete("0.0", "end")
 
-    # Add text from list to image
-    if TRANSLATE:
-        for t in trans_list:
-            cv2.putText(img_inpaint, t[0], t[1], cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 1, 2)
-    
-    
-    # Show images (with rectangles and with text removed)
-    if DEBUG:
-        plt.figure(figsize=(7, 7))
-        plt.axis('off')
-        plt.imshow(cv2.cvtColor(img_rect, cv2.COLOR_BGR2RGB))
-        
-
-        # Final image
-        plt.figure(figsize=(7, 7))
-        plt.axis('off')
-        
-        #    cv2.imwrite("mask.png", mask)
-        
-        plt.imshow(cv2.cvtColor(img_inpaint, cv2.COLOR_BGR2RGB))
-        plt.show()
-        
-    
-    
-    cv2.imwrite(IMAGE.replace(".png", "").replace(".jpg", "") + "_ocr.png", img_inpaint)
-    
-
-# Main
 if __name__ == "__main__":
-    OCR()
-    
+    app = App()
+    app.mainloop()
+
+
