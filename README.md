@@ -37,7 +37,7 @@ python bubbleblaster.py
 <img src="https://i.imgur.com/i5P85uJ.png" width="50%" height="50%">
 
 ### Raw Text
-<img src="https://i.imgur.com/vMNrrIj.png">
+<img src="https://i.imgur.com/GNipEw1.png">
 
 ### Translated Text vs Scanlation
 <img src="https://i.imgur.com/sFmAxh8.png">
