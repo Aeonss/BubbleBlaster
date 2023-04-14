@@ -1,3 +1,5 @@
+<p align="center"><img src="https://i.imgur.com/rGZx1Wu.png" width="230" height="160"/></p>
+
 <h1 align="center">BubbleBlaster</h1>
 
 <font size="3"><a href="https://github.com/Aeonss/BubbleBlaster/releases/latest/">Bubble Blaster</a> is a python script that remove text from speech bubbles in mangas/manhwas with OCR.
@@ -10,9 +12,9 @@ Install python:
 https://www.python.org/downloads/
 ```
 
-Clone the repository:
+Download the [latest](https://github.com/Aeonss/BubbleBlaster/releases/latest/) release and unzip it.
 ``` bash
-git clone https://github.com/Aeonss/BubbleBlaster
+https://github.com/Aeonss/BubbleBlaster/releases/latest/
 ```
 
 Download the requirements:
@@ -20,10 +22,8 @@ Download the requirements:
 pip install -r requirements.txt
 ```
 
-Run with:
-```bash
-python bubbleblaster.py
-```
+Run the "BubbleBlaster.bat" file included in the release.
+
 
 ## ❤️ &nbsp; Examples
 
