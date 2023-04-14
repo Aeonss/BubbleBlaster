@@ -10,10 +10,6 @@ Install python:
 https://www.python.org/downloads/
 ```
 
-### Option 1:
-Download the latest [release](https://github.com/Aeonss/BubbleBlaster/releases/latest/), and run the exe file (windows only)
-
-### Option 2:
 Clone the repository:
 ``` bash
 git clone https://github.com/Aeonss/BubbleBlaster
@@ -23,6 +19,7 @@ Download the requirements:
 ``` bash
 pip install -r requirements.txt
 ```
+
 Run with:
 ```bash
 python bubbleblaster.py
@@ -73,7 +70,7 @@ python bubbleblaster.py
 
 ## 🤖 &nbsp; To Do
 * Make translations better
-
+* Somehow package everything into an exe...
 
 
 ## 📘 &nbsp; License
