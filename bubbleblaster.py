@@ -181,7 +181,7 @@ class App(ctk.CTk):
                 plt.show()
                     
             # Export raw list to a text file
-            if EXPORT_RAW == 1:
+            if EXPORT_RAW:
                 path = os.path.dirname(image)
                 with open(os.path.join(path, os.path.splitext(os.path.basename(image))[0] + "_raw.txt"), 'w', encoding='UTF-8') as fp:
                     for line in raw_list:
@@ -189,7 +189,7 @@ class App(ctk.CTk):
                     fp.close()
             
             
-            if EXPORT_TRANSLATE == 1:
+            if EXPORT_TRANSLATE:
                 
                 trans_list = []
                 for raw in raw_list:
