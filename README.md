@@ -25,13 +25,13 @@ pip install -r requirements.txt
 ```
 Run with:
 ```bash
-python app.py
+python bubbleblaster.py
 ```
 
 ## ❤️ &nbsp; Examples
 
 ### Program
-<img src="https://i.imgur.com/A94knfF.png" width="50%" height="50%">
+<img src="https://i.imgur.com/jCIFmG6.png" width="50%" height="50%">
 
 ### Original Raw Manhwa
 <img src="https://i.imgur.com/GK9WTEE.png" width="50%" height="50%">

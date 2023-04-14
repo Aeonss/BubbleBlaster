@@ -1,3 +1,6 @@
 *.png
 *.jpg
 \test
+\build
+\dist
+bubbleblaster.spec
