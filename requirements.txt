@@ -1,4 +1,4 @@
-customtkinter==4.5.10
+customtkinter==5.1.2
 deep_translator==1.10.1
 easyocr==1.6.2
 matplotlib==3.6.2
