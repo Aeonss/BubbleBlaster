@@ -10,7 +10,7 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
-import sys, os, requests, json
+import sys, os, requests, json, webbrowser
 import easyocr
 import cv2
 from deep_translator import GoogleTranslator
@@ -256,9 +256,7 @@ class App(ctk.CTk):
         if latest_tag > self.tag:
             res = messagebox.askquestion(title="BubbleBlaster", message=f"A new update has been released for BubbleBlaster (v{latest_tag})! Do you want to download it?")
             if res == 'yes':
-                r2 = requests.get(f"https://github.com/Aeonss/BubbleBlaster/releases/download/{latest_tag}/BubbleBlaster.zip", allow_redirects=True)
-                with open('BubbleBlaster.zip', 'wb') as f:
-                    f.write(r2.content)
+                webbrowser.open(f"https://github.com/Aeonss/BubbleBlaster/releases/tag/{latest_tag}/")
     
     
 if __name__ == "__main__":
