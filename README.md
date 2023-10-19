@@ -24,12 +24,9 @@ Download the [latest](https://github.com/Aeonss/BubbleBlaster/releases/latest/) 
 https://github.com/Aeonss/BubbleBlaster/releases/latest/
 ```
 
-Download the requirements:
-``` bash
-pip install -r requirements.txt
-```
+Run the "BubbleBlaster.exe" file included in the release.
 
-Run the "BubbleBlaster.bat" file included in the release.
+Make sure you python version is **not** more than 3.11.
 
 
 ## ❤️ &nbsp; Examples
