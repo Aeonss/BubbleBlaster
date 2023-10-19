@@ -26,7 +26,7 @@ https://github.com/Aeonss/BubbleBlaster/releases/latest/
 
 Run the "BubbleBlaster.exe" file included in the release.
 
-Make sure you python version is **not** more than 3.11.
+Make sure your python version is **not** more than 3.11.
 
 
 ## ❤️ &nbsp; Examples
