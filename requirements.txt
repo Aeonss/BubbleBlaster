@@ -1,7 +1,9 @@
-customtkinter==5.1.2
-deep_translator==1.10.1
-easyocr==1.6.2
-matplotlib==3.7.1
-opencv_python_headless==4.5.4.60
-Pillow==9.5.0
-requests==2.29.0
+torch=2.1.0
+torchvision=0.16.0
+customtkinter==5.2.1
+deep_translator==1.11.4
+easyocr==1.7.1
+matplotlib==3.8.0
+opencv_python==4.8.1.78
+Pillow==10.1.0
+Requests==2.31.0

@@ -10,7 +10,7 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
-import sys, os, requests, json, webbrowser
+import sys, os, requests, json, webbrowser, string, shutil
 import easyocr
 import cv2
 from deep_translator import GoogleTranslator
@@ -24,7 +24,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry('500x500')
-        self.tag = "1.1"
+        self.tag = "1.2"
         self.title(f"BubbleBlaster v{self.tag}")
         self.eval('tk::PlaceWindow . center')
         
@@ -56,7 +56,7 @@ class App(ctk.CTk):
         self.languageLabel = ctk.CTkLabel(master=self, width=20, height=20, text="Detected Language", font=("Arial Bold", 14))
         self.languageLabel.grid(row=2, column=0, sticky="nw", padx=25, pady=(20, 5))
         
-        self.languageCombobox = ctk.CTkComboBox(master=self, width=460, values=["Korean", "Japanese", "Simplified Chinese", "Traditional Chinese", "English"])
+        self.languageCombobox = ctk.CTkComboBox(master=self, width=460, values=["Korean", "Japanese", "Simplified Chinese", "Traditional Chinese", "English", "Russian"])
         self.languageCombobox.grid(row=3, column=0, sticky="nw", padx=20)
         
         self.confidenceLabel = ctk.CTkLabel(master=self, width=20, height=20, text="Confidence: (0.4)", font=("Arial Bold", 14))
@@ -132,9 +132,26 @@ class App(ctk.CTk):
             LANGUAGE = "ch_tra"
         elif LANGUAGE == "English":
             LANGUAGE = "en"
-
+        elif LANGUAGE == "Russian":
+            LANGUAGE = "ru"
+        
     
-        for image in images:
+        for index, image in enumerate(images):
+            # Copies image and remove non-unicode characters
+            if not image.isascii():
+                name = ''.join(c for c in image if c in string.printable)
+
+                if os.path.splitext(os.path.basename(name))[1] == '':
+                    basename = ""
+                    ext = os.path.splitext(os.path.basename(name))[0]
+                else:
+                    basename = os.path.splitext(os.path.basename(name))[0]
+                    ext = os.path.splitext(os.path.basename(name))[1]
+                
+                name = os.path.join(os.path.dirname(image), basename + str(index) + ext)
+                shutil.copy(image, name)
+                image = name
+            
             # OCR
             reader = easyocr.Reader([LANGUAGE])
             result = reader.readtext(image)
