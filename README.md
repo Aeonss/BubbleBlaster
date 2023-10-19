@@ -76,7 +76,7 @@ Make sure your python version is **not** more than 3.11.
 
 
 ## 🤖 &nbsp; To Do
-* Somehow package everything into an exe...
+* Update icon
 
 
 ## 📘 &nbsp; License

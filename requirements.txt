@@ -5,5 +5,4 @@ deep_translator==1.11.4
 easyocr==1.7.1
 matplotlib==3.8.0
 opencv_python==4.8.1.78
-Pillow==10.1.0
 Requests==2.31.0

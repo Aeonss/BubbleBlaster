@@ -10,12 +10,11 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
-import sys, os, requests, json, webbrowser, string, shutil
+import os, requests, json, webbrowser, string, shutil
 import easyocr
 import cv2
 from deep_translator import GoogleTranslator
 from matplotlib import pyplot as plt
-from PIL import Image
 
 #----------------------------------------------------------------------------------------------------#
 
