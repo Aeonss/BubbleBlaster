@@ -14,7 +14,7 @@
 
 
 ## 🔨 &nbsp; Installation
-Install python:
+Install python (Make sure your python version is **NOT** more than 3.11):
 ``` bash
 https://www.python.org/downloads/
 ```
@@ -25,10 +25,16 @@ https://github.com/Aeonss/BubbleBlaster/releases/latest/
 ```
 
 If you have a compatible GPU, install [CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html) for faster OCRs.
+``` bash
+https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html
+```
 
-Run the "BubbleBlaster.exe" file included in the release.
+<br>Run the "BubbleBlaster.exe" file included in the release.
 
-Make sure your python version is **not** more than 3.11.
+<br>To install manually, git clone the repository, and run bubbleblaster.py
+``` bash
+git clone https://github.com/Aeonss/BubbleBlaster
+```
 
 
 ## ❤️ &nbsp; Examples
