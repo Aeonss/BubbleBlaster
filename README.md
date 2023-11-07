@@ -24,6 +24,8 @@ Download the [latest](https://github.com/Aeonss/BubbleBlaster/releases/latest/) 
 https://github.com/Aeonss/BubbleBlaster/releases/latest/
 ```
 
+If you have a compatible GPU, install [CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html) for faster OCRs.
+
 Run the "BubbleBlaster.exe" file included in the release.
 
 Make sure your python version is **not** more than 3.11.

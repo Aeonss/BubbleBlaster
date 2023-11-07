@@ -172,6 +172,8 @@ class App(ctk.CTk):
             # For each detected text
             for r in result:
                 
+                print(r)
+                
                 # If the OCR text is above the CONFIDENCE
                 if r[2] >= CONFIDENCE:
                     
