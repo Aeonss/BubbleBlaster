@@ -23,12 +23,15 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry('500x500')
-        self.tag = "1.2.1"
+        self.tag = "1.2.2"
         self.title(f"BubbleBlaster v{self.tag}")
         self.eval('tk::PlaceWindow . center')
         #self.iconbitmap("\icon.ico")
         
-        self.checkUpdate()
+        try:
+            self.checkUpdate()
+        except Exception:
+            pass
 
 
         self.grid_rowconfigure(0, weight=0)
