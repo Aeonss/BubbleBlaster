@@ -5,6 +5,8 @@
 #   https://stackoverflow.com/a/39316695
 #   https://stackoverflow.com/a/40795835
 
+#   pyinstaller bubbleblaster.py -i icon.ico --onefile
+
 #----------------------------------------------------------------------------------------------------#
 
 import customtkinter as ctk
@@ -23,7 +25,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry('500x500')
-        self.tag = "1.2.2"
+        self.tag = "1.2.3"
         self.title(f"BubbleBlaster v{self.tag}")
         self.eval('tk::PlaceWindow . center')
         #self.iconbitmap("\icon.ico")
@@ -58,7 +60,7 @@ class App(ctk.CTk):
         self.languageLabel = ctk.CTkLabel(master=self, width=20, height=20, text="Detected Language", font=("Arial Bold", 14))
         self.languageLabel.grid(row=2, column=0, sticky="nw", padx=25, pady=(20, 5))
         
-        self.languageCombobox = ctk.CTkComboBox(master=self, width=460, values=["Korean", "Japanese", "Simplified Chinese", "Traditional Chinese", "English", "Russian"])
+        self.languageCombobox = ctk.CTkComboBox(master=self, width=460, values=["Korean", "Japanese", "Simplified Chinese", "Traditional Chinese", "English", "Russian", "Spanish", "Italian"])
         self.languageCombobox.grid(row=3, column=0, sticky="nw", padx=20)
         
         self.confidenceLabel = ctk.CTkLabel(master=self, width=20, height=20, text="Confidence: (0.4)", font=("Arial Bold", 14))
@@ -136,6 +138,10 @@ class App(ctk.CTk):
             LANGUAGE = "en"
         elif LANGUAGE == "Russian":
             LANGUAGE = "ru"
+        elif LANGUAGE == "Spanish":
+            LANGUAGE = "es"
+        elif LANGUAGE == "Italian":
+            LANGUAGE = "it"
         
     
         for index, image in enumerate(images):
@@ -174,8 +180,6 @@ class App(ctk.CTk):
             
             # For each detected text
             for r in result:
-                
-                print(r)
                 
                 # If the OCR text is above the CONFIDENCE
                 if r[2] >= CONFIDENCE:

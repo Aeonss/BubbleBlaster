@@ -3,6 +3,6 @@
 \test
 \build
 \dist
-bubbleblaster.spec
+*.spec
 *.zip
 *.ico
