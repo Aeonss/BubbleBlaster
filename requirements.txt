@@ -1,5 +1,5 @@
-torch=2.1.0
-torchvision=0.16.0
+torch==2.1.0
+torchvision==0.16.0
 customtkinter==5.2.1
 deep_translator==1.11.4
 easyocr==1.7.1
