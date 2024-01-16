@@ -29,7 +29,7 @@ If you have a compatible GPU, install [CUDA](https://docs.nvidia.com/cuda/cuda-i
 https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html
 ```
 
-<br>Run the "BubbleBlaster.exe" file included in the release.
+<br>Run the "BubbleBlaster.bat" file included in the release.
 
 <br>To install manually, git clone the repository, and run bubbleblaster.py
 ``` bash

@@ -12,7 +12,7 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
-import os, requests, json, webbrowser, string, shutil
+import os, requests, json, webbrowser, string, shutil, subprocess
 import easyocr
 import cv2
 from deep_translator import GoogleTranslator
@@ -25,7 +25,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry('500x500')
-        self.tag = "1.2.3"
+        self.tag = "1.2.4"
         self.title(f"BubbleBlaster v{self.tag}")
         self.eval('tk::PlaceWindow . center')
         #self.iconbitmap("\icon.ico")
@@ -283,8 +283,20 @@ class App(ctk.CTk):
             if res == 'yes':
                 webbrowser.open(f"https://github.com/Aeonss/BubbleBlaster/releases/tag/{latest_tag}/")
     
+
+def install_dependencies():
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(script_directory)
     
+    try:
+        subprocess.check_call(["pip", "install", "-r", "requirements.txt"])
+        print("Dependencies installed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error installing dependencies: {e}")
+            
 if __name__ == "__main__":
+    install_dependencies()
+    
     app = App()
     app.mainloop()
 

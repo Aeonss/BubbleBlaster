@@ -5,25 +5,25 @@ import easyocr
 import cv2
 from matplotlib import pyplot as plt
 
-VERSION = "1.2.2"
+VERSION = "1.2.4"
 
 parser = argparse.ArgumentParser(prog='bb', description='BubbleBlaster')
 parser.add_argument("path",
                     help='Location of the image or folder of images')
-parser.add_argument("-c", "--confidence", 
+parser.add_argument("--c", "--confidence", 
                     type=float,
                     default=0.4,
                     help='Confidence level of OCR (default=0.4), must be value between 0 and 1. Higher values are stricter.')
-parser.add_argument("-l", "--language", 
+parser.add_argument("--l", "--language", 
                     default='ko',
                     choices=['ko', 'ja', 'ch_sim', 'ch_tra', 'en', 'ru'],
                     help='Language to OCR (default=ko). [ko, ja, ch_sim, ch_tra, en, ru]')
 
-parser.add_argument("-p", "--preview",
+parser.add_argument("--p", "--preview",
                     action="store_true",
                     help="Preview the OCR")
 
-parser.add_argument("-v", "--version",
+parser.add_argument("--v", "--version",
                     action="version",
                     version=f"BubbleBlaster v{VERSION}",
                     help="Show the version of the program")
