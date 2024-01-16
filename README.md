@@ -16,7 +16,7 @@
 ## 🔨 &nbsp; Installation
 Install python (Make sure your python version is **NOT** more than 3.11):
 ``` bash
-https://www.python.org/downloads/
+https://www.python.org/downloads/release/python-3117/
 ```
 
 Download the [latest](https://github.com/Aeonss/BubbleBlaster/releases/latest/) release and unzip it.
