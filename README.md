@@ -86,6 +86,8 @@ git clone https://github.com/Aeonss/BubbleBlaster
 
 ## 🤖 &nbsp; To Do
 * Add a drag and select in the preview to manually select areas to inpaint
+* Add zoom feature for large images in preview
+* Add right click to move around in preview
 
 
 ## 📘 &nbsp; License
