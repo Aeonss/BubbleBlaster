@@ -16,7 +16,7 @@
 ## 🔨 &nbsp; Installation
 Install python (Make sure your python version is **NOT** more than 3.11):
 ``` bash
-https://www.python.org/downloads/release/python-3117/
+https://www.python.org/downloads/release/python-3119/
 ```
 
 Download the [latest](https://github.com/Aeonss/BubbleBlaster/releases/latest/) release and unzip it.
@@ -73,10 +73,11 @@ git clone https://github.com/Aeonss/BubbleBlaster
     * By default, the confidence level is 0.4.
     * The higher the number, the less likely text is recognized and OCR'd, but the text is more likely to be the selected language
     * The lower the number, the more likely that more text is recognized and OCR'd, but the text may include symbols or parts of the art
-4. Select any additional options
+4. Select which texts to remove
+    * You can select chosen outlined text or click the "select all" button to remove all chosen text
+5. Select any additional options
     * "Export raw text" option will give a text file (.txt) of the text that the program OCR'd
     * "Export translated text" option will give a text file (.txt) of the translated text that the program OCR'd
-    * "Preview image before exporting" option will give a preview window of all found text in the image along with the confidence level. This is so that you can play with the confidence level to get all the text you want to be removed.
 
 ## ✅ &nbsp; Additional Information
 * BubbleBlaster was created with [**EasyOCR**](https://github.com/JaidedAI/EasyOCR) and [**Deep-Translator**](https://github.com/nidhaloff/deep-translator).
@@ -84,7 +85,7 @@ git clone https://github.com/Aeonss/BubbleBlaster
 
 
 ## 🤖 &nbsp; To Do
-* Update icon
+* Add a drag and select in the preview to manually select areas to inpaint
 
 
 ## 📘 &nbsp; License
