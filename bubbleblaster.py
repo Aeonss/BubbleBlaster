@@ -337,7 +337,7 @@ class App(ctk.CTk):
     
             
 if __name__ == "__main__":
-    TAG = "2.0.1"
+    TAG = "2.0.2"
     util.checkUpdate(TAG)
 
     app = App(TAG)

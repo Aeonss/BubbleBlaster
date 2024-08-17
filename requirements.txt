@@ -9,3 +9,4 @@ Requests==2.32.3
 torch==2.4.0
 magicinpaint-cpu==1.0.2
 magicinpaint-gpu==1.0.2
+numpy==1.26.4
