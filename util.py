@@ -1,4 +1,4 @@
-import sys, os, subprocess, requests, json, shutil, string, webbrowser
+import os, requests, json, shutil, string, webbrowser
 from tkinter import messagebox
 import torch
 
@@ -23,31 +23,6 @@ def checkUpdate(tag):
                 webbrowser.open(f"https://github.com/Aeonss/BubbleBlaster/releases/tag/{latest_tag}/")
     except:
         print("Error getting latest update")
-
-def install_dependencies():
-    try:
-        import pkg_resources
-    except ImportError:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", "setuptools"])
-        import pkg_resources
-
-    required = []
-    
-    cwd = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(cwd)
-
-    with open('requirements.txt') as f:
-        for line in f:
-            required.append(line.strip())
-
-    installed = {pkg.key for pkg in pkg_resources.working_set}
-    missing = [pkg for pkg in required if pkg not in installed]
-
-    if missing:
-        print("Installing missing packages: ", missing)
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", *missing])
-    else:
-        print("All required packages are already installed.")
 
 def setLog(self):
     if not torch.cuda.is_available():

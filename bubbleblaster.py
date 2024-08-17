@@ -5,12 +5,11 @@
 #   https://stackoverflow.com/a/39316695
 #   https://stackoverflow.com/a/40795835
 
-#   pyinstaller bubbleblaster.py -i icon.ico --onefile
-
 #----------------------------------------------------------------------------------------------------#
 
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
+import tkinter as tk    
 
 import util
 import os
@@ -19,6 +18,7 @@ import magicinpaint as mi
 import cv2
 from deep_translator import GoogleTranslator
 from matplotlib import pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.widgets import Button
 
 #----------------------------------------------------------------------------------------------------#
@@ -115,10 +115,30 @@ class App(ctk.CTk):
         
     def updateConfidenceLabel(self, value):
         self.confidenceLabel.configure(text=f"Confidence: ({round(value, 2)})")
-        
     
     # Main function
     def blast(self):
+        self.new_window = tk.Toplevel(self)
+        self.new_window.title("BubbleBlaster")
+        self.new_window.geometry("1200x800")  # Adjust the window size as needed
+
+        # Create a frame for the canvas and scrollbar
+        self.frame = tk.Frame(self.new_window)
+        self.frame.pack(fill=tk.BOTH, expand=True)
+
+        # Create the canvas and scrollbars
+        self.canvas = tk.Canvas(self.frame)
+        self.scroll_x = tk.Scrollbar(self.frame, orient=tk.HORIZONTAL, command=self.canvas.xview)
+        self.scroll_y = tk.Scrollbar(self.frame, orient=tk.VERTICAL, command=self.canvas.yview)
+        self.scroll_x.pack(side=tk.BOTTOM, fill=tk.X)
+        self.scroll_y.pack(side=tk.RIGHT, fill=tk.Y)
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.canvas.configure(xscrollcommand=self.scroll_x.set, yscrollcommand=self.scroll_y.set)
+
+        # Create a frame to contain the Matplotlib figure
+        self.canvas_frame = tk.Frame(self.canvas)
+        self.canvas.create_window((0, 0), window=self.canvas_frame, anchor=tk.NW)
+
         # Check if any images are imported
         imageInput = self.inputTextbox.get("0.0", "end").strip()
         if imageInput == "":
@@ -155,6 +175,7 @@ class App(ctk.CTk):
             confidences = []
             preview_boxes = set()
             box_clicked = [False]
+            
             
             for r in result:
                 if r[2] >= CONFIDENCE:
@@ -213,68 +234,90 @@ class App(ctk.CTk):
                 messagebox.showinfo(title="BubbleBlaster", message="Bubbles have been blasted!")
 
             
-            app.attributes("-disabled", True)
-            fig, ax = plt.subplots(figsize=(7, 7))
+            #app.attributes("-disabled", True)
+            height, width, _ = preview_rect.shape
+            fig_width = width / 100
+            fig_height = height / 100
+            fig, ax = plt.subplots(figsize=(fig_width, fig_height))
             ax.imshow(cv2.cvtColor(preview_rect, cv2.COLOR_BGR2RGB))
             ax.axis('off')
 
+            zoom_factor = 1
+            x_center = width // 2
+            y_center = height // 2
+            ax.set_xlim(x_center - width / (2 * zoom_factor), x_center + width / (2 * zoom_factor))
+            ax.set_ylim(y_center + height / (2 * zoom_factor), y_center - height / (2 * zoom_factor))
+
+
             def onclick(event):
-                # Get the x and y coordinates of the click
-                x, y = int(event.xdata), int(event.ydata)
+                # Left click
+                if event.button == 1:
+                    x, y = int(event.xdata), int(event.ydata)
+                    for i, (top_right, bottom_left) in enumerate(rects):
+                        if bottom_left[0] <= x <= top_right[0] and bottom_left[1] <= y <= top_right[1]:
+                            box_clicked[0] = True
+                            if i in preview_boxes:
+                                preview_boxes.remove(i)
+                            else:
+                                preview_boxes.add(i)
+                            updated_preview = update_preview()
+                            ax.imshow(cv2.cvtColor(updated_preview, cv2.COLOR_BGR2RGB))
+                            plt.draw()
+                            break
+                # Right click
+                elif event.button == 3:
+                    print("test")
 
-                for i, (top_right, bottom_left) in enumerate(rects):
-                    if bottom_left[0] <= x <= top_right[0] and bottom_left[1] <= y <= top_right[1]:
-                        box_clicked[0] = True
-                        if i in preview_boxes:
-                            preview_boxes.remove(i)
-                        else:
-                            preview_boxes.add(i)
-                        # Update the preview image
-                        updated_preview = update_preview()
-                        ax.imshow(cv2.cvtColor(updated_preview, cv2.COLOR_BGR2RGB))
-                        plt.draw()
-                        break
+            def on_scroll(event):
+                if event.delta:  # Windows
+                    self.canvas.yview_scroll(int(-event.delta / 120), 'units')
+                else:  # Mac
+                    self.canvas.yview_scroll(int(-event.delta), 'units')
+
             
+
+            self.canvas_frame.bind_all('<MouseWheel>', on_scroll)
             fig.canvas.mpl_connect('button_press_event', onclick)
-            
+
             # Add "Done", "Cancel", and "Paint All" buttons
-            ax_cancel = plt.axes([0.25, 0.02, 0.1, 0.05])
-            btn_cancel = Button(ax_cancel, 'Cancel')
+            btn_cancel = tk.Button(self.new_window, text="Cancel", width=15, height=2, command=lambda: self.new_window.destroy())
+            btn_cancel.pack(side=tk.LEFT)
 
-            ax_paint_selected = plt.axes([0.45, 0.02, 0.15, 0.05])
-            btn_paint_selected = Button(ax_paint_selected, 'Paint Selected')
+            btn_paint_selected = tk.Button(self.new_window, text="Paint Selected", width=15, height=2, command=lambda: on_paint_selected())
+            btn_paint_selected.pack(side=tk.LEFT)
 
-            ax_paint_all = plt.axes([0.7, 0.02, 0.1, 0.05])
-            btn_paint_all = Button(ax_paint_all, 'Paint All')
+            btn_paint_all = tk.Button(self.new_window, text="Paint All", width=15, height=2, command=lambda: on_paint_all())
+            btn_paint_all.pack(side=tk.LEFT)
 
-            def on_cancel(event):
-                plt.close(fig)
-
-            def on_paint_selected(event):
+            def on_paint_selected():
                 if CUDA:
                     inpaint_rects(True)
                 else:
                     fill_rects(True)
+                self.inputTextbox.configure(state="normal")
                 self.inputTextbox.delete("0.0", "end")
+                self.inputTextbox.configure(state="disabled")
+                self.new_window.destroy()
 
-            def on_paint_all(event):
+            def on_paint_all():
                 if CUDA:
                     inpaint_rects(False)
                 else:
                     fill_rects(False)
+                self.inputTextbox.configure(state="normal")
                 self.inputTextbox.delete("0.0", "end")
+                self.inputTextbox.configure(state="disabled")
+                self.new_window.destroy()
                 
 
-            btn_cancel.on_clicked(on_cancel)
-            btn_paint_selected.on_clicked(on_paint_selected)
-            btn_paint_all.on_clicked(on_paint_all)
-
-            plt.show()
+            canvas_agg = FigureCanvasTkAgg(fig, master=self.canvas_frame)
+            canvas_agg.draw()
+            canvas_agg.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+            self.canvas_frame.update_idletasks()
+            self.canvas.config(scrollregion=self.canvas.bbox(tk.ALL))
             
-            app.attributes("-disabled", False)
-            app.focus_force()
-
-
+            #app.attributes("-disabled", False)
+            #app.focus_force()
 
             # Export raw list to a text file
             if EXPORT_RAW:
@@ -290,11 +333,11 @@ class App(ctk.CTk):
                     fp.write(translation)
                     fp.close()
 
+    
+    
             
 if __name__ == "__main__":
-    util.install_dependencies()
-
-    TAG = "2.0.0"
+    TAG = "2.0.1"
     util.checkUpdate(TAG)
 
     app = App(TAG)

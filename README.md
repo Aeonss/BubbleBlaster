@@ -29,18 +29,23 @@ If you have a compatible GPU, install [CUDA](https://docs.nvidia.com/cuda/cuda-i
 https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html
 ```
 
+<br>Run the "INSTALL_DEPENDENCIES.bat" file on the first run
 <br>Run the "BubbleBlaster.bat" file included in the release.
 
-<br>To install manually, git clone the repository, and run bubbleblaster.py
+<br>To install manually, git clone the repository, install dependencies and run bubbleblaster.py
 ``` bash
 git clone https://github.com/Aeonss/BubbleBlaster
+pip install -r requirements.txt
+python bubbleblaster.py
 ```
 
 
 ## ❤️ &nbsp; Examples
 
 ### Program
-<img src="https://i.imgur.com/jCIFmG6.png" width="50%" height="50%">
+<img src="https://i.imgur.com/aVx2UfH.png" width="50%" height="50%">
+
+<img src="https://i.imgur.com/SvsIrfI.png" width="50%" height="50%">
 
 ### Original Raw Manhwa
 <img src="https://i.imgur.com/GK9WTEE.png" width="50%" height="50%">
