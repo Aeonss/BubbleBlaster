@@ -46,8 +46,8 @@ class App(ctk.CTk):
         self.title(f"BubbleBlaster v{tag}")
         self.eval('tk::PlaceWindow . center')
 
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        self.iconbitmap(os.path.join(script_dir, "icon.ico"))
+        #script_dir = os.path.dirname(os.path.abspath(__file__))
+        #self.iconbitmap(os.path.join(script_dir, "icon.ico"))
 
         self.grid_rowconfigure(0, weight=0)
         self.grid_columnconfigure(0, weight=1)
